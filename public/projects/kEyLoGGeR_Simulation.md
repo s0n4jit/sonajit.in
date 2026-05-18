@@ -5,6 +5,6 @@ description: "A simulated keylogger project built for educational and cybersecur
 image: "/img/projectsimg/what-is-a-keylogger-featured-image-big.png"
 imageHint: "Preview of the Keylogger Simulation project"
 tags: ["Python", "Cybersecurity", "Simulation", "Ethical Hacking"]
-githubLink: "https://github.com/son4jit/kEyLoGGeR_Simulation"
-demoLink: "https://github.com/son4jit/kEyLoGGeR_Simulation"
+githubLink: "https://github.com/s0n4jit/KeYLoGGeR"
+demoLink: "https://github.com/s0n4jit/KeYLoGGeR"
 ---

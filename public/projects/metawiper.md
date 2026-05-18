@@ -5,7 +5,7 @@ description: "A Bash script for Linux systems to securely wipe metadata from var
 image: "/img/projectsimg/metawiper.png"
 imageHint: "Preview of the MetaWiper"
 tags: ["Python", "Privacy", "Metadata"]
-githubLink: "https://github.com/son4jit/metawiper"
-demoLink: "https://metawiper.projects.sonajit.in/"
+githubLink: "https://github.com/s0n4jit/metawiper"
+demoLink: "https://metawiper.sonajit.in/"
 ---
  
