@@ -1,0 +1,45 @@
+{
+  "name": "sonajit-portfolio",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@octokit/rest": "^20.1.1",
+    "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^1.3.1",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.11.11",
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^0.475.0",
+    "marked": "^12.0.2",
+    "next": "16.1.6",
+    "next-themes": "^0.4.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3",
+    "typescript": "~5.4.5"
+  },
+  "optionalDependencies": {
+    "@next/swc-linux-x64-gnu": "16.1.6"
+  }
+}
