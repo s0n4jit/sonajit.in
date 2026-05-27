@@ -224,8 +224,7 @@ const Skills: React.FC = () => {
       >
         <div 
           ref={marqueeRef}
-          className="flex w-max snap-x snap-mandatory items-center gap-5 px-6 py-4 md:absolute md:left-0 md:top-0 md:gap-8 md:px-0"
-          style={{ willChange: 'transform' }}
+          className="flex w-max snap-x snap-mandatory items-center gap-5 px-6 py-4 md:absolute md:left-0 md:top-0 md:gap-8 md:px-0 will-change-transform"
         >
           {duplicatedSkills.map((skill, idx) => (
             <div key={`skill-${idx}`} className="snap-center">
