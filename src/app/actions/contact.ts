@@ -10,7 +10,7 @@ export async function submitContactForm(formData: { name: string; email: string;
 
   if (!endpoint) {
     console.error("FORMSPREE_ENDPOINT is not defined in server environment variables.");
-    return { success: false, error: "Configuration Error" };
+    return { success: false, error: "Contact form is not configured" };
   }
 
   try {
@@ -27,12 +27,12 @@ export async function submitContactForm(formData: { name: string; email: string;
     if (response.ok) {
       return { success: true };
     } else {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => null);
       console.error("Formspree error:", errorData);
-      return { success: false, error: "Submission Rejected" };
+      return { success: false, error: "Formspree rejected the submission" };
     }
   } catch (error) {
     console.error("Server Action contact submission error:", error);
-    return { success: false, error: "Network Error" };
+    return { success: false, error: "Unable to reach Formspree" };
   }
 }

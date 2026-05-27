@@ -4,8 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ProjectData } from '../types';
-import { LOCAL_PROJECT_FILES } from '../constants';
-import { getProjectReadme } from '@/src/app/actions/github';
+import { getProjectReadme, getProjects } from '@/src/app/actions/github';
 import { cn } from '@/src/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -151,48 +150,16 @@ const Projects: React.FC<ProjectsProps> = ({ isFullArchive = false, onModalState
       setLoading(true);
       setError(null);
       try {
-        const projectDataPromises = LOCAL_PROJECT_FILES.map(async (filename) => {
-          if (!filename) return null;
-          try {
-            const res = await fetch(`/projects/${filename}`);
-            if (!res.ok) {
-               return null;
-            }
-            const text = await res.text();
-            const match = text.match(/^---\s*([\s\S]*?)\s*---/);
-            const yamlStr = match ? match[1] : '';
-            const metadata: any = {};
-            yamlStr.split('\n').forEach(line => {
-              const parts = line.split(':');
-              if (parts.length >= 2) {
-                const key = parts[0].trim();
-                let value = parts.slice(1).join(':').trim().replace(/^"(.*)"$/, '$1');
-                if (value.startsWith('[') && value.endsWith(']')) {
-                  metadata[key] = value.slice(1, -1).split(',').map(s => s.trim().replace(/^"(.*)"$/, '$1'));
-                } else { metadata[key] = value; }
-              }
-            });
-            return {
-              title: metadata.title || filename,
-              description: metadata.description || "",
-              tags: metadata.tags || [],
-              githubLink: metadata.githubLink || "#",
-              demoLink: metadata.demoLink,
-              image: metadata.image || `/img/placeholder.png`,
-              date: metadata.date || "2024-01-01"
-            } as ProjectData;
-          } catch (e: any) { 
-            return null;
-          }
-        });
+        const { projects: fetchedProjects, error: fetchError } = await getProjects();
 
-        const results = await Promise.all(projectDataPromises);
-        const validProjects = results.filter((p): p is ProjectData => p !== null);
-        
-        const sorted = validProjects.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
-        setProjects(sorted);
+        if (fetchError) {
+          throw new Error(fetchError);
+        }
+
+        setProjects(fetchedProjects);
       } catch (err: any) { 
-        // Silent
+        console.error('Project sync error:', err);
+        setError(err.message || "Could not synchronize project archive.");
       } finally { setLoading(false); }
     };
     fetchProjects();

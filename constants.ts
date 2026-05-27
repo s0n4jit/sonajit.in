@@ -95,14 +95,5 @@ export const TITLES = [
 
 export const GITHUB_USERNAME = "son4jit";
 
-// Blog configuration
-export const BLOG_REPO_OWNER = "son4jit";
-export const BLOG_REPO_NAME = "blog.sonajit.in";
-export const BLOG_POSTS_PATH = "_posts";
-export const BLOG_EXTERNAL_URL = "https://blog.sonajit.in";
-
-// Local markdown projects to be merged with GitHub repos
-export const LOCAL_PROJECT_FILES = [
-  "metawiper.md",
-  "kEyLoGGeR_Simulation.md"
-];
+// Public blog URL used by client components. GitHub repo settings stay server-side in env.
+export const BLOG_EXTERNAL_URL = process.env.NEXT_PUBLIC_BLOG_EXTERNAL_URL || "https://blog.sonajit.in";

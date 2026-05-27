@@ -73,7 +73,7 @@ input, textarea {
 .markdown-body pre code { background-color: transparent; padding: 0; color: #cbd5e1; border-radius: 0; }
 .markdown-body a { color: #ef4444; text-decoration: none; }
 .markdown-body a:hover { text-decoration: underline; }
-.markdown-body img { border-radius: 0.5rem; display: inline-block; vertical-align: middle; }
+.markdown-body img { border-radius: 0.5rem; display: inline-block; vertical-align: middle; max-width: 100%; height: auto; }
 .markdown-body p > img:only-child,
 .markdown-body img[width*="100%"] { border: 1px solid rgba(255, 255, 255, 0.1); margin: 2rem 0; display: block; }
 .markdown-body blockquote { border-left: 4px solid hsl(var(--primary)); padding-left: 1rem; color: #64748b; font-style: italic; margin: 1.5rem 0; }

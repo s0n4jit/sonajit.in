@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="flex items-center gap-4">
-          <a href="mailto:contact@sonajit.in" className="flex items-center gap-2 text-[10px] font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-widest">
+          <a href="mailto:hello@sonajit.in" className="flex items-center gap-2 text-[10px] font-bold text-slate-400 hover:text-red-500 transition-colors uppercase tracking-widest">
             <Mail className="w-4 h-4" />
             <span>hello@sonajit.in</span>
           </a>

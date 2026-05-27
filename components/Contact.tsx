@@ -8,10 +8,12 @@ import { motion } from 'framer-motion';
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
+    setStatusMessage(null);
 
     try {
       const result = await submitContactForm(formData);
@@ -26,7 +28,11 @@ const Contact: React.FC = () => {
     } catch (error) {
       console.error('Contact submission error:', error);
       setStatus('error');
-      setTimeout(() => setStatus('idle'), 4000);
+      setStatusMessage(error instanceof Error ? error.message : 'Unable to send message right now');
+      setTimeout(() => {
+        setStatus('idle');
+        setStatusMessage(null);
+      }, 4000);
     }
   };
 
@@ -123,9 +129,14 @@ const Contact: React.FC = () => {
             >
               {status === 'loading' && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>}
               {status === 'success' ? 'Message Sent' : 
-               status === 'error' ? 'Network Error' :
+               status === 'error' ? 'Submission Failed' :
                status === 'loading' ? 'Sending...' : 'Submit Inquiry'}
             </button>
+            {statusMessage && (
+              <p className="mt-4 text-center text-xs font-bold uppercase tracking-widest text-orange-400">
+                {statusMessage}
+              </p>
+            )}
           </form>
         </div>
       </motion.div>

@@ -50,7 +50,7 @@ const ProficiencyBadge: React.FC<{ level: Proficiency }> = ({ level }) => {
     Expert: 'border-red-400/50 bg-red-950/70 text-red-300',
   };
   return (
-    <div className={cn("rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider", styles[level])}>
+    <div className={cn("rounded-full border px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider md:px-3 md:py-1 md:text-[10px]", styles[level])}>
       {level}
     </div>
   );
@@ -62,20 +62,20 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
   
   return (
     <motion.div 
-      className="group relative flex h-[120px] w-[280px] flex-shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-white/5 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:bg-white/10"
+      className="group relative flex h-[96px] w-[210px] flex-shrink-0 cursor-pointer flex-col justify-between overflow-hidden rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:bg-white/10 sm:h-[105px] sm:w-[240px] md:h-[120px] md:w-[280px] md:p-5"
       whileHover={{ y: -4 }}
     >
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 md:gap-4">
           <motion.div 
             className="text-slate-400 transition-colors duration-300 group-hover:text-primary"
             whileHover={{ scale: 1.1, filter: 'drop-shadow(0 0 8px hsl(var(--primary)))' }}
           >
-            <Icon className="h-8 w-8" strokeWidth={1.5} />
+            <Icon className="h-6 w-6 md:h-8 md:w-8" strokeWidth={1.5} />
           </motion.div>
-          <div>
-            <h3 className="font-bold text-white">{name}</h3>
-            <p className="text-xs text-slate-400">{category}</p>
+          <div className="min-w-0">
+            <h3 className="truncate text-sm font-bold text-white md:text-base">{name}</h3>
+            <p className="truncate text-[10px] text-slate-400 md:text-xs">{category}</p>
           </div>
         </div>
       </div>
@@ -88,31 +88,63 @@ const SkillCard: React.FC<{ skill: Skill }> = ({ skill }) => {
 
 // --- Main Skills Component (Infinite Loop) ---
 const Skills: React.FC = () => {
+  const viewportRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const animationFrameId = useRef<number | undefined>(undefined);
   const isHovering = useRef(false);
+  const isInteracting = useRef(false);
+  const interactionTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const currentX = useRef(0);
+  const mobileScrollX = useRef(0);
   const speed = useRef(0.5);
 
   useEffect(() => {
+    const viewportEl = viewportRef.current;
     const marqueeEl = marqueeRef.current;
-    if (!marqueeEl) return;
+    if (!viewportEl || !marqueeEl) return;
 
     const loop = () => {
-      // Adjust speed based on hover state (easing)
-      const targetSpeed = isHovering.current ? 0.1 : 0.5;
-      speed.current += (targetSpeed - speed.current) * 0.1;
-
-      currentX.current -= speed.current;
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
       const contentWidth = marqueeEl.scrollWidth / 2; // Width of one set of items
 
-      // Reset position to create seamless loop
-      if (contentWidth > 0 && currentX.current <= -contentWidth) {
-        currentX.current += contentWidth;
+      if (isMobile) {
+        if (isInteracting.current) {
+          marqueeEl.style.transform = '';
+          mobileScrollX.current = viewportEl.scrollLeft;
+          currentX.current = -mobileScrollX.current;
+
+          if (contentWidth > 0 && viewportEl.scrollLeft >= contentWidth) {
+            viewportEl.scrollLeft -= contentWidth;
+            mobileScrollX.current = viewportEl.scrollLeft;
+            currentX.current = -mobileScrollX.current;
+          }
+        } else {
+          viewportEl.scrollLeft = 0;
+          const targetSpeed = 0.5;
+          speed.current += (targetSpeed - speed.current) * 0.1;
+
+          currentX.current -= speed.current;
+
+          if (contentWidth > 0 && currentX.current <= -contentWidth) {
+            currentX.current += contentWidth;
+          }
+
+          marqueeEl.style.transform = `translate3d(${currentX.current}px, 0, 0)`;
+        }
+      } else {
+        viewportEl.scrollLeft = 0;
+        const targetSpeed = isHovering.current ? 0.1 : 0.5;
+        speed.current += (targetSpeed - speed.current) * 0.1;
+
+        currentX.current -= speed.current;
+
+        if (contentWidth > 0 && currentX.current <= -contentWidth) {
+          currentX.current += contentWidth;
+        }
+
+        marqueeEl.style.transform = `translate3d(${currentX.current}px, 0, 0)`;
       }
-      
-      // Apply transform using 3D for GPU acceleration
-      marqueeEl.style.transform = `translate3d(${currentX.current}px, 0, 0)`;
+
       animationFrameId.current = requestAnimationFrame(loop);
     };
 
@@ -122,8 +154,38 @@ const Skills: React.FC = () => {
       if (animationFrameId.current !== undefined) {
         cancelAnimationFrame(animationFrameId.current);
       }
+
+      if (interactionTimeout.current !== undefined) {
+        clearTimeout(interactionTimeout.current);
+      }
     };
   }, []);
+
+  const pauseMobileAutoScroll = () => {
+    const viewportEl = viewportRef.current;
+    const marqueeEl = marqueeRef.current;
+
+    if (viewportEl && marqueeEl) {
+      marqueeEl.style.transform = '';
+      viewportEl.scrollLeft = Math.abs(currentX.current);
+    }
+
+    isInteracting.current = true;
+
+    if (interactionTimeout.current !== undefined) {
+      clearTimeout(interactionTimeout.current);
+    }
+  };
+
+  const resumeMobileAutoScroll = () => {
+    if (interactionTimeout.current !== undefined) {
+      clearTimeout(interactionTimeout.current);
+    }
+
+    interactionTimeout.current = setTimeout(() => {
+      isInteracting.current = false;
+    }, 1200);
+  };
 
   return (
     <section id="skills" className="py-24 bg-black relative">
@@ -148,17 +210,27 @@ const Skills: React.FC = () => {
       </motion.div>
 
       <div 
-        className="relative w-full h-[140px] overflow-hidden [mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)]"
+        ref={viewportRef}
+        className="relative w-full h-[140px] overflow-x-auto overflow-y-hidden overscroll-x-contain scroll-smooth [mask-image:linear-gradient(to_right,transparent_0%,black_8%,black_92%,transparent_100%)] [scrollbar-width:none] md:overflow-hidden md:[mask-image:linear-gradient(to_right,transparent_0%,black_15%,black_85%,transparent_100%)] [&::-webkit-scrollbar]:hidden"
         onMouseEnter={() => { isHovering.current = true; }}
         onMouseLeave={() => { isHovering.current = false; }}
+        onTouchStart={pauseMobileAutoScroll}
+        onTouchEnd={resumeMobileAutoScroll}
+        onTouchCancel={resumeMobileAutoScroll}
+        onPointerDown={pauseMobileAutoScroll}
+        onPointerUp={resumeMobileAutoScroll}
+        onPointerCancel={resumeMobileAutoScroll}
+        onScroll={resumeMobileAutoScroll}
       >
         <div 
           ref={marqueeRef}
-          className="absolute left-0 top-0 flex w-max items-center gap-8 py-4"
+          className="flex w-max snap-x snap-mandatory items-center gap-5 px-6 py-4 md:absolute md:left-0 md:top-0 md:gap-8 md:px-0"
           style={{ willChange: 'transform' }}
         >
           {duplicatedSkills.map((skill, idx) => (
-            <SkillCard key={`skill-${idx}`} skill={skill} />
+            <div key={`skill-${idx}`} className="snap-center">
+              <SkillCard skill={skill} />
+            </div>
           ))}
         </div>
       </div>

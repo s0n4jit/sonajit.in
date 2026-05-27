@@ -21,9 +21,9 @@ const ResumeHeader = () => (
         <p className="text-xs sm:text-base text-gray-700 mt-1">Networking & Cybersecurity</p>
     </div>
     <div className="mt-4 flex justify-center items-center flex-wrap gap-x-4 gap-y-2 text-xs sm:text-sm text-gray-600">
-        <a href="mailto:contact@sonajit.in" className="flex items-center gap-2 hover:text-red-600 transition-colors">
+        <a href="mailto:hello@sonajit.in" className="flex items-center gap-2 hover:text-red-600 transition-colors">
             <Mail size={14} />
-            <span>contact@sonajit.in</span>
+            <span>hello@sonajit.in</span>
         </a>
         <Link href="https://www.linkedin.com/in/sonajitrabha/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-red-600 transition-colors">
             <Linkedin size={14} />

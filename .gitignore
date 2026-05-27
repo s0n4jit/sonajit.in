@@ -12,6 +12,7 @@ tsconfig.tsbuildinfo
 
 # Local environment variables
 .env
+.env.exanmple
 
 # Logs
 npm-debug.log*
